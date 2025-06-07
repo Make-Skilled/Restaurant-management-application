@@ -1,0 +1,113 @@
+{% extends "base.html" %}
+
+{% block title %}Gallery - RestaurantHub{% endblock %}
+
+{% block content %}
+<!-- Gallery Hero Section -->
+<section class="hero-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Gallery</h1>
+        <p class="text-xl max-w-3xl mx-auto">
+            Take a visual journey through our restaurant's ambiance and culinary creations
+        </p>
+    </div>
+</section>
+
+<!-- Gallery Grid -->
+<section class="py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% if images %}
+                {% for image in images %}
+                    <div class="relative group overflow-hidden rounded-lg shadow-lg">
+                        <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" 
+                             alt="{{ image.caption }}"
+                             class="w-full h-64 object-cover transform transition duration-300 group-hover:scale-110">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                            <div class="text-white text-center p-4">
+                                <h3 class="text-xl font-semibold mb-2">{{ image.title }}</h3>
+                                <p>{{ image.caption }}</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% else %}
+                <!-- Default Gallery Items -->
+                {% for i in range(9) %}
+                    <div class="relative group overflow-hidden rounded-lg shadow-lg">
+                        <div class="w-full h-64 bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center">
+                            <i class="fas fa-image text-4xl text-white"></i>
+                        </div>
+                        <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
+                            <div class="text-white text-center p-4">
+                                <h3 class="text-xl font-semibold mb-2">Coming Soon</h3>
+                                <p>Gallery image will be added soon</p>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Categories Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-gray-800 mb-12 text-center">Browse by Category</h2>
+        
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <!-- Restaurant Ambiance -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+                    <i class="fas fa-chair text-5xl text-white"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Restaurant Ambiance</h3>
+                    <p class="text-gray-600">Experience our welcoming and elegant dining atmosphere</p>
+                </div>
+            </div>
+            
+            <!-- Signature Dishes -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+                    <i class="fas fa-utensils text-5xl text-white"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Signature Dishes</h3>
+                    <p class="text-gray-600">Discover our expertly crafted culinary creations</p>
+                </div>
+            </div>
+            
+            <!-- Events & Celebrations -->
+            <div class="bg-white rounded-lg shadow-lg overflow-hidden">
+                <div class="h-48 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+                    <i class="fas fa-glass-cheers text-5xl text-white"></i>
+                </div>
+                <div class="p-6 text-center">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Events & Celebrations</h3>
+                    <p class="text-gray-600">Special moments shared at RestaurantHub</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-orange-500 text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Experience It Yourself?</h2>
+        <p class="text-xl mb-8">
+            Join us for an unforgettable dining experience and create your own memories.
+        </p>
+        <div class="space-x-4">
+            <a href="{{ url_for('reservations') }}" class="bg-white text-orange-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-block">
+                Make a Reservation
+            </a>
+            <a href="{{ url_for('menu') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-orange-500 transition inline-block">
+                View Our Menu
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

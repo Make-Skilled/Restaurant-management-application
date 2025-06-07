@@ -1,0 +1,190 @@
+{% extends "base.html" %}
+
+{% block title %}Make a Reservation - RestaurantHub{% endblock %}
+
+{% block content %}
+<!-- Reservation Hero Section -->
+<section class="hero-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Make a Reservation</h1>
+        <p class="text-xl max-w-3xl mx-auto">
+            Book your table for a memorable dining experience
+        </p>
+    </div>
+</section>
+
+<!-- Reservation Form Section -->
+<section class="py-16">
+    <div class="max-w-4xl mx-auto px-4">
+        <div class="bg-white rounded-lg shadow-lg p-8">
+            <form action="{{ url_for('reservations') }}" method="POST" class="space-y-6">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Date Selection -->
+                    <div>
+                        <label for="date" class="block text-sm font-medium text-gray-700">Date</label>
+                        <input type="date" id="date" name="date" required
+                               min="{{ today }}"
+                               class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                    </div>
+                    
+                    <!-- Time Selection -->
+                    <div>
+                        <label for="time" class="block text-sm font-medium text-gray-700">Time</label>
+                        <select id="time" name="time" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <option value="">Select a time</option>
+                            <option value="11:00">11:00 AM</option>
+                            <option value="11:30">11:30 AM</option>
+                            <option value="12:00">12:00 PM</option>
+                            <option value="12:30">12:30 PM</option>
+                            <option value="13:00">1:00 PM</option>
+                            <option value="13:30">1:30 PM</option>
+                            <option value="14:00">2:00 PM</option>
+                            <option value="18:00">6:00 PM</option>
+                            <option value="18:30">6:30 PM</option>
+                            <option value="19:00">7:00 PM</option>
+                            <option value="19:30">7:30 PM</option>
+                            <option value="20:00">8:00 PM</option>
+                            <option value="20:30">8:30 PM</option>
+                            <option value="21:00">9:00 PM</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Number of Guests -->
+                    <div>
+                        <label for="guests" class="block text-sm font-medium text-gray-700">Number of Guests</label>
+                        <select id="guests" name="guests" required
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <option value="">Select number of guests</option>
+                            {% for i in range(1, 11) %}
+                                <option value="{{ i }}">{{ i }} {% if i == 1 %}Guest{% else %}Guests{% endif %}</option>
+                            {% endfor %}
+                            <option value="more">More than 10 (Call us)</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Seating Preference -->
+                    <div>
+                        <label for="seating" class="block text-sm font-medium text-gray-700">Seating Preference</label>
+                        <select id="seating" name="seating"
+                                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500">
+                            <option value="no_preference">No Preference</option>
+                            <option value="indoor">Indoor</option>
+                            <option value="outdoor">Outdoor</option>
+                            <option value="bar">Bar</option>
+                            <option value="private">Private Room</option>
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Special Requests -->
+                <div>
+                    <label for="special_requests" class="block text-sm font-medium text-gray-700">
+                        Special Requests (Optional)
+                    </label>
+                    <textarea id="special_requests" name="special_requests" rows="3"
+                              class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-orange-500 focus:ring-orange-500"
+                              placeholder="Any dietary restrictions, special occasions, or other requests?"></textarea>
+                </div>
+                
+                <!-- Contact Information Preview -->
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h3 class="text-sm font-medium text-gray-700 mb-2">Your Contact Information</h3>
+                    <p class="text-sm text-gray-600">
+                        Name: {{ session.user_name }}<br>
+                        Email: {{ session.user_email if session.user_email else 'Email not available' }}<br>
+                        Phone: {{ session.user_phone if session.user_phone else 'Phone not available' }}
+                    </p>
+                    <p class="text-xs text-gray-500 mt-2">
+                        To update your contact information, please visit your profile settings.
+                    </p>
+                </div>
+                
+                <!-- Terms -->
+                <div class="flex items-start">
+                    <input id="terms" name="terms" type="checkbox" required
+                           class="mt-1 h-4 w-4 text-orange-600 focus:ring-orange-500 border-gray-300 rounded">
+                    <label for="terms" class="ml-2 block text-sm text-gray-600">
+                        I agree to the reservation 
+                        <a href="#" class="text-orange-600 hover:text-orange-500">terms and conditions</a>, 
+                        including the cancellation policy.
+                    </label>
+                </div>
+                
+                <button type="submit" 
+                        class="w-full bg-orange-500 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-600 transition">
+                    Confirm Reservation
+                </button>
+            </form>
+        </div>
+        
+        <!-- Additional Information -->
+        <div class="mt-12 grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="text-center">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-clock text-xl text-orange-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Reservation Hours</h3>
+                <p class="text-gray-600">
+                    Lunch: 11:00 AM - 2:00 PM<br>
+                    Dinner: 6:00 PM - 9:00 PM
+                </p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-user-friends text-xl text-orange-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Group Bookings</h3>
+                <p class="text-gray-600">
+                    For groups larger than 10,<br>
+                    please call us directly
+                </p>
+            </div>
+            
+            <div class="text-center">
+                <div class="w-12 h-12 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-alt text-xl text-orange-500"></i>
+                </div>
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">Special Events</h3>
+                <p class="text-gray-600">
+                    Contact us for private events<br>
+                    and special occasions
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- FAQ Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-4xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Reservation FAQs</h2>
+        
+        <div class="space-y-6">
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">What is your cancellation policy?</h3>
+                <p class="text-gray-600">We ask that you notify us at least 24 hours in advance for any cancellations. For special events and large groups, different policies may apply.</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">How long can we keep the table?</h3>
+                <p class="text-gray-600">Standard reservations are for 2 hours. If you need more time, please let us know in advance, and we'll do our best to accommodate you.</p>
+            </div>
+            
+            <div class="bg-white rounded-lg shadow p-6">
+                <h3 class="text-lg font-semibold text-gray-800 mb-2">What if we're running late?</h3>
+                <p class="text-gray-600">We hold reservations for 15 minutes past the scheduled time. Please call us if you're running late, and we'll do our best to accommodate you.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+// Set minimum date to today
+document.addEventListener('DOMContentLoaded', function() {
+    const today = new Date().toISOString().split('T')[0];
+    document.getElementById('date').min = today;
+});
+</script>
+{% endblock %}

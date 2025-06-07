@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+
+{% block title %}About Us - RestaurantHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-bg text-white py-16">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-4xl md:text-5xl font-bold mb-4">Our Story</h1>
+        <p class="text-xl max-w-3xl mx-auto">
+            Discover the passion and tradition behind RestaurantHub
+        </p>
+    </div>
+</section>
+
+<!-- Story Section -->
+<section class="py-16">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center mb-16">
+            <div>
+                {% if restaurant_info and restaurant_info.story %}
+                    <div class="prose prose-lg max-w-none">
+                        {{ restaurant_info.story|safe }}
+                    </div>
+                {% else %}
+                    <p class="text-lg text-gray-600 mb-6">
+                        Founded with a passion for culinary excellence, RestaurantHub has been serving delicious meals and creating memorable dining experiences since 2020. Our commitment to quality ingredients, exceptional service, and a welcoming atmosphere has made us a favorite destination for food lovers.
+                    </p>
+                    <p class="text-lg text-gray-600 mb-6">
+                        Our team of experienced chefs combines traditional cooking methods with modern culinary innovations to create dishes that delight and inspire. We believe that great food has the power to bring people together and create lasting memories.
+                    </p>
+                {% endif %}
+            </div>
+            <div class="relative">
+                <div class="w-full h-96 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-utensils text-6xl text-white"></i>
+                </div>
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <span class="text-white font-bold">EST.<br>2020</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Values Section -->
+        <div class="mb-16">
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Our Values</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="text-center p-6 bg-white rounded-lg shadow-lg">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-heart text-2xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Passion</h3>
+                    <p class="text-gray-600">We put our heart into every dish we serve and every service we provide.</p>
+                </div>
+                
+                <div class="text-center p-6 bg-white rounded-lg shadow-lg">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-star text-2xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Quality</h3>
+                    <p class="text-gray-600">We use only the finest ingredients and maintain high standards in everything we do.</p>
+                </div>
+                
+                <div class="text-center p-6 bg-white rounded-lg shadow-lg">
+                    <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                        <i class="fas fa-users text-2xl text-orange-500"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-2">Community</h3>
+                    <p class="text-gray-600">We believe in creating a welcoming space where people can come together and share moments.</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Team Section -->
+        <div>
+            <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Meet Our Team</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-1">John Doe</h3>
+                    <p class="text-gray-600 mb-2">Head Chef</p>
+                    <p class="text-gray-500">20+ years of culinary experience</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-1">Jane Smith</h3>
+                    <p class="text-gray-600 mb-2">Restaurant Manager</p>
+                    <p class="text-gray-500">15+ years in hospitality management</p>
+                </div>
+                
+                <div class="text-center">
+                    <div class="w-32 h-32 bg-gray-200 rounded-full mx-auto mb-4 flex items-center justify-center">
+                        <i class="fas fa-user text-4xl text-gray-400"></i>
+                    </div>
+                    <h3 class="text-xl font-semibold text-gray-800 mb-1">Mike Johnson</h3>
+                    <p class="text-gray-600 mb-2">Pastry Chef</p>
+                    <p class="text-gray-500">12+ years of pastry expertise</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Awards Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <h2 class="text-3xl font-bold text-gray-800 mb-8 text-center">Our Achievements</h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center p-6">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-award text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Best Restaurant 2024</h3>
+                <p class="text-gray-600">Local Food Critics Association</p>
+            </div>
+            
+            <div class="text-center p-6">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-star text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">5 Star Rating</h3>
+                <p class="text-gray-600">Customer Satisfaction</p>
+            </div>
+            
+            <div class="text-center p-6">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-certificate text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Quality Excellence</h3>
+                <p class="text-gray-600">Food Safety Certification</p>
+            </div>
+            
+            <div class="text-center p-6">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-thumbs-up text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Community Choice</h3>
+                <p class="text-gray-600">Local Business Awards</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-orange-500 text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">Come Dine With Us</h2>
+        <p class="text-xl mb-8">
+            Experience our warm hospitality and delicious cuisine firsthand.
+        </p>
+        <div class="space-x-4">
+            <a href="{{ url_for('reservations') }}" class="bg-white text-orange-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-block">
+                Make a Reservation
+            </a>
+            <a href="{{ url_for('contact') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-orange-500 transition inline-block">
+                Contact Us
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

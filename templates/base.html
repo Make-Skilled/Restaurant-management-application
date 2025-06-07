@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Restaurant Management System{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        .hero-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            transition: transform 0.3s ease;
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-white shadow-lg sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex justify-between items-center py-4">
+                <div class="flex items-center">
+                    <a href="{{ url_for('index') }}" class="text-2xl font-bold text-gray-800">
+                        <i class="fas fa-utensils text-orange-500"></i>
+                        RestaurantHub
+                    </a>
+                </div>
+                
+                <div class="hidden md:flex items-center space-x-8">
+                    <a href="{{ url_for('index') }}" class="text-gray-700 hover:text-orange-500 transition">Home</a>
+                    <a href="{{ url_for('menu') }}" class="text-gray-700 hover:text-orange-500 transition">Menu</a>
+                    <a href="{{ url_for('about') }}" class="text-gray-700 hover:text-orange-500 transition">About</a>
+                    <a href="{{ url_for('gallery') }}" class="text-gray-700 hover:text-orange-500 transition">Gallery</a>
+                    <a href="{{ url_for('contact') }}" class="text-gray-700 hover:text-orange-500 transition">Contact</a>
+                    
+                    {% if session.user_id %}
+                        <div class="relative group">
+                            <button class="flex items-center text-gray-700 hover:text-orange-500 transition">
+                                <i class="fas fa-user mr-2"></i>
+                                {{ session.user_name }}
+                                <i class="fas fa-chevron-down ml-1"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+                                {% if session.user_type == 'admin' %}
+                                    <a href="{{ url_for('admin_dashboard') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-tachometer-alt mr-2"></i>Admin Dashboard
+                                    </a>
+                                {% else %}
+                                    <a href="{{ url_for('reservations') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-calendar mr-2"></i>Make Reservation
+                                    </a>
+                                    <a href="{{ url_for('my_reservations') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-list mr-2"></i>My Reservations
+                                    </a>
+                                    <a href="{{ url_for('order') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                        <i class="fas fa-shopping-cart mr-2"></i>Order Online
+                                    </a>
+                                {% endif %}
+                                <hr class="my-1">
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="{{ url_for('login') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
+                            Login
+                        </a>
+                        <a href="{{ url_for('register') }}" class="border border-orange-500 text-orange-500 px-4 py-2 rounded-lg hover:bg-orange-50 transition">
+                            Register
+                        </a>
+                    {% endif %}
+                </div>
+                
+                <!-- Mobile menu button -->
+                <div class="md:hidden">
+                    <button class="mobile-menu-button">
+                        <i class="fas fa-bars text-gray-700"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Mobile menu -->
+        <div class="mobile-menu hidden md:hidden bg-white border-t">
+            <div class="px-4 pt-2 pb-3 space-y-1">
+                <a href="{{ url_for('index') }}" class="block py-2 text-gray-700">Home</a>
+                <a href="{{ url_for('menu') }}" class="block py-2 text-gray-700">Menu</a>
+                <a href="{{ url_for('about') }}" class="block py-2 text-gray-700">About</a>
+                <a href="{{ url_for('gallery') }}" class="block py-2 text-gray-700">Gallery</a>
+                <a href="{{ url_for('contact') }}" class="block py-2 text-gray-700">Contact</a>
+                {% if session.user_id %}
+                    <hr class="my-2">
+                    {% if session.user_type == 'admin' %}
+                        <a href="{{ url_for('admin_dashboard') }}" class="block py-2 text-gray-700">Admin Dashboard</a>
+                    {% else %}
+                        <a href="{{ url_for('reservations') }}" class="block py-2 text-gray-700">Make Reservation</a>
+                        <a href="{{ url_for('my_reservations') }}" class="block py-2 text-gray-700">My Reservations</a>
+                        <a href="{{ url_for('order') }}" class="block py-2 text-gray-700">Order Online</a>
+                    {% endif %}
+                    <a href="{{ url_for('logout') }}" class="block py-2 text-gray-700">Logout</a>
+                {% else %}
+                    <a href="{{ url_for('login') }}" class="block py-2 text-gray-700">Login</a>
+                    <a href="{{ url_for('register') }}" class="block py-2 text-gray-700">Register</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+
+    <!-- Flash Messages -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+            <div class="max-w-7xl mx-auto px-4 mt-4">
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ category }} p-4 mb-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700 border border-red-300{% else %}bg-green-100 text-green-700 border border-green-300{% endif %}">
+                        <div class="flex items-center">
+                            <i class="fas {% if category == 'error' %}fa-exclamation-triangle{% else %}fa-check-circle{% endif %} mr-2"></i>
+                            {{ message }}
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+        {% endif %}
+    {% endwith %}
+
+    <!-- Main Content -->
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-gray-800 text-white py-12 mt-16">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-xl font-semibold mb-4">
+                        <i class="fas fa-utensils text-orange-500"></i>
+                        RestaurantHub
+                    </h3>
+                    <p class="text-gray-300">
+                        Experience the finest dining with our exquisite menu and exceptional service.
+                    </p>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Quick Links</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('menu') }}" class="text-gray-300 hover:text-orange-500">Menu</a></li>
+                        <li><a href="{{ url_for('reservations') }}" class="text-gray-300 hover:text-orange-500">Reservations</a></li>
+                        <li><a href="{{ url_for('about') }}" class="text-gray-300 hover:text-orange-500">About Us</a></li>
+                        <li><a href="{{ url_for('contact') }}" class="text-gray-300 hover:text-orange-500">Contact</a></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Services</h4>
+                    <ul class="space-y-2">
+                        <li><a href="{{ url_for('order') }}" class="text-gray-300 hover:text-orange-500">Online Ordering</a></li>
+                        <li><a href="{{ url_for('reservations') }}" class="text-gray-300 hover:text-orange-500">Table Booking</a></li>
+                        <li><span class="text-gray-300">Catering</span></li>
+                        <li><span class="text-gray-300">Private Events</span></li>
+                    </ul>
+                </div>
+                
+                <div>
+                    <h4 class="text-lg font-semibold mb-4">Contact Info</h4>
+                    <div class="space-y-2 text-gray-300">
+                        <p><i class="fas fa-phone mr-2"></i>+1 (555) 123-4567</p>
+                        <p><i class="fas fa-envelope mr-2"></i>info@restauranthub.com</p>
+                        <p><i class="fas fa-map-marker-alt mr-2"></i>123 Food Street, Hyderabad</p>
+                    </div>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-300 hover:text-orange-500">
+                            <i class="fab fa-facebook text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-orange-500">
+                            <i class="fab fa-instagram text-xl"></i>
+                        </a>
+                        <a href="#" class="text-gray-300 hover:text-orange-500">
+                            <i class="fab fa-twitter text-xl"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="border-t border-gray-700 mt-8 pt-8 text-center text-gray-300">
+                <p>&copy; 2025 RestaurantHub. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-button').addEventListener('click', function() {
+            document.querySelector('.mobile-menu').classList.toggle('hidden');
+        });
+        
+        // Auto-hide flash messages after 5 seconds
+        setTimeout(function() {
+            const alerts = document.querySelectorAll('.alert');
+            alerts.forEach(alert => {
+                alert.style.opacity = '0';
+                alert.style.transition = 'opacity 0.5s';
+                setTimeout(() => alert.remove(), 500);
+            });
+        }, 5000);
+    </script>
+</body>
+</html>

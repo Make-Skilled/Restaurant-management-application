@@ -1,0 +1,209 @@
+{% extends "base.html" %}
+
+{% block title %}Home - RestaurantHub{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="hero-bg text-white py-20">
+    <div class="max-w-7xl mx-auto px-4 text-center">
+        <h1 class="text-5xl md:text-6xl font-bold mb-6">
+            Welcome to RestaurantHub
+        </h1>
+        <p class="text-xl mb-8 max-w-3xl mx-auto">
+            Experience culinary excellence with our carefully crafted dishes, exceptional service, and warm atmosphere. Your perfect dining destination awaits.
+        </p>
+        <div class="space-x-4">
+            <a href="{{ url_for('menu') }}" class="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition inline-block">
+                View Menu
+            </a>
+            {% if not session.user_id %}
+                <a href="{{ url_for('register') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-800 transition inline-block">
+                    Join Us
+                </a>
+            {% else %}
+                <a href="{{ url_for('reservations') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-gray-800 transition inline-block">
+                    Make Reservation
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+
+<!-- Featured Menu Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Featured Dishes</h2>
+            <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                Discover our signature dishes crafted with the finest ingredients and traditional techniques
+            </p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% if featured_items %}
+                {% for item in featured_items %}
+                <div class="bg-white rounded-lg shadow-lg overflow-hidden card-hover">
+                    <div class="h-48 bg-gradient-to-r from-orange-400 to-orange-600 flex items-center justify-center">
+                        <i class="fas fa-utensils text-4xl text-white"></i>
+                    </div>
+                    <div class="p-6">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-2">{{ item.name }}</h3>
+                        <p class="text-gray-600 mb-4">{{ item.description }}</p>
+                        <div class="flex justify-between items-center">
+                            <span class="text-2xl font-bold text-orange-500">${{ "%.2f"|format(item.price) }}</span>
+                            {% if session.user_id %}
+                                <a href="{{ url_for('order') }}" class="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600 transition">
+                                    Order Now
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            {% else %}
+                <div class="col-span-full text-center py-12">
+                    <i class="fas fa-utensils text-6xl text-gray-300 mb-4"></i>
+                    <p class="text-xl text-gray-500">Featured dishes will appear here soon!</p>
+                </div>
+            {% endif %}
+        </div>
+        
+        <div class="text-center mt-12">
+            <a href="{{ url_for('menu') }}" class="bg-orange-500 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-orange-600 transition">
+                View Full Menu
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- Services Section -->
+<section class="py-16 bg-gray-50">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="text-center mb-12">
+            <h2 class="text-4xl font-bold text-gray-800 mb-4">Our Services</h2>
+            <p class="text-xl text-gray-600">Everything you need for the perfect dining experience</p>
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div class="text-center p-6 bg-white rounded-lg shadow-lg card-hover">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-utensils text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Dine In</h3>
+                <p class="text-gray-600">Experience our cozy atmosphere and exceptional service in our beautifully designed dining space.</p>
+            </div>
+            
+            <div class="text-center p-6 bg-white rounded-lg shadow-lg card-hover">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-shopping-bag text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Online Ordering</h3>
+                <p class="text-gray-600">Order your favorite dishes online for convenient pickup or home delivery.</p>
+                {% if session.user_id %}
+                    <a href="{{ url_for('order') }}" class="inline-block mt-3 text-orange-500 hover:text-orange-600">Order Now →</a>
+                {% endif %}
+            </div>
+            
+            <div class="text-center p-6 bg-white rounded-lg shadow-lg card-hover">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-calendar-alt text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Reservations</h3>
+                <p class="text-gray-600">Book your table in advance to ensure the perfect dining experience for any occasion.</p>
+                {% if session.user_id %}
+                    <a href="{{ url_for('reservations') }}" class="inline-block mt-3 text-orange-500 hover:text-orange-600">Book Now →</a>
+                {% endif %}
+            </div>
+            
+            <div class="text-center p-6 bg-white rounded-lg shadow-lg card-hover">
+                <div class="w-16 h-16 bg-orange-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-concierge-bell text-2xl text-orange-500"></i>
+                </div>
+                <h3 class="text-xl font-semibold text-gray-800 mb-2">Catering</h3>
+                <p class="text-gray-600">Let us cater your special events with our delicious food and professional service.</p>
+                <a href="{{ url_for('contact') }}" class="inline-block mt-3 text-orange-500 hover:text-orange-600">Contact Us →</a>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- About Preview Section -->
+<section class="py-16 bg-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+                <h2 class="text-4xl font-bold text-gray-800 mb-6">Our Story</h2>
+                {% if restaurant_info and restaurant_info.story %}
+                    <p class="text-lg text-gray-600 mb-6">{{ restaurant_info.story[:300] }}...</p>
+                {% else %}
+                    <p class="text-lg text-gray-600 mb-6">
+                        RestaurantHub was founded with a passion for bringing people together through exceptional food and unforgettable dining experiences. Our journey began with a simple belief: great food has the power to create lasting memories and bring communities together.
+                    </p>
+                {% endif %}
+                <a href="{{ url_for('about') }}" class="bg-orange-500 text-white px-6 py-3 rounded-lg hover:bg-orange-600 transition">
+                    Learn More About Us
+                </a>
+            </div>
+            <div class="relative">
+                <div class="w-full h-96 bg-gradient-to-br from-orange-400 to-orange-600 rounded-lg flex items-center justify-center">
+                    <i class="fas fa-utensils text-6xl text-white"></i>
+                </div>
+                <div class="absolute -bottom-6 -left-6 w-24 h-24 bg-yellow-400 rounded-full flex items-center justify-center">
+                    <i class="fas fa-star text-white text-2xl"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Quick Stats Section -->
+<section class="py-16 bg-gray-800 text-white">
+    <div class="max-w-7xl mx-auto px-4">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            <div>
+                <div class="text-4xl font-bold text-orange-500 mb-2">50+</div>
+                <div class="text-lg">Menu Items</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-orange-500 mb-2">1000+</div>
+                <div class="text-lg">Happy Customers</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-orange-500 mb-2">5</div>
+                <div class="text-lg">Years Experience</div>
+            </div>
+            <div>
+                <div class="text-4xl font-bold text-orange-500 mb-2">24/7</div>
+                <div class="text-lg">Online Ordering</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-16 bg-orange-500 text-white">
+    <div class="max-w-4xl mx-auto px-4 text-center">
+        <h2 class="text-4xl font-bold mb-6">Ready to Experience Great Food?</h2>
+        <p class="text-xl mb-8">
+            Join thousands of satisfied customers who have made RestaurantHub their favorite dining destination.
+        </p>
+        <div class="space-x-4">
+            {% if not session.user_id %}
+                <a href="{{ url_for('register') }}" class="bg-white text-orange-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-block">
+                    Sign Up Today
+                </a>
+                <a href="{{ url_for('menu') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-orange-500 transition inline-block">
+                    Browse Menu
+                </a>
+            {% else %}
+                <a href="{{ url_for('order') }}" class="bg-white text-orange-500 px-8 py-3 rounded-lg text-lg font-semibold hover:bg-gray-100 transition inline-block">
+                    Order Now
+                </a>
+                <a href="{{ url_for('reservations') }}" class="bg-transparent border-2 border-white text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-white hover:text-orange-500 transition inline-block">
+                    Make Reservation
+                </a>
+            {% endif %}
+        </div>
+    </div>
+</section>
+{% endblock %}

@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - RestaurantHub{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link href="{{ url_for('static', filename='css/custom.css') }}" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <!-- Admin Navigation -->
+    <nav class="bg-gray-800">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="{{ url_for('admin_dashboard') }}" class="text-white text-xl font-bold">
+                        <i class="fas fa-utensils text-orange-500 mr-2"></i>
+                        RestaurantHub Admin
+                    </a>
+                </div>
+                
+                <div class="hidden md:block">
+                    <div class="flex items-center space-x-4">
+                        <a href="{{ url_for('index') }}" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                            <i class="fas fa-home"></i>
+                            View Site
+                        </a>
+                        <div class="relative group">
+                            <button class="flex items-center text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+                                <i class="fas fa-user mr-2"></i>
+                                {{ session.user_name }}
+                                <i class="fas fa-chevron-down ml-1"></i>
+                            </button>
+                            <div class="absolute right-0 mt-2 w-48 bg-white rounded-md shadow-lg py-1 hidden group-hover:block">
+                                <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
+                                    <i class="fas fa-sign-out-alt mr-2"></i>Logout
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <div class="flex h-screen bg-gray-100">
+        <!-- Sidebar -->
+        <div class="hidden md:flex md:flex-shrink-0">
+            <div class="flex flex-col w-64">
+                <div class="flex flex-col h-0 flex-1">
+                    <nav class="flex-1 px-2 py-4 bg-gray-800 space-y-1">
+                        <a href="{{ url_for('admin_dashboard') }}" 
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md 
+                                  {% if request.endpoint == 'admin_dashboard' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-tachometer-alt mr-3"></i>
+                            Dashboard
+                        </a>
+                        
+                        <a href="{{ url_for('admin_menu') }}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.endpoint == 'admin_menu' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-utensils mr-3"></i>
+                            Menu Management
+                        </a>
+                        
+                        <a href="{{ url_for('admin_orders') }}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.endpoint == 'admin_orders' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-shopping-cart mr-3"></i>
+                            Orders
+                        </a>
+                        
+                        <a href="{{ url_for('admin_reservations') }}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.endpoint == 'admin_reservations' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-calendar-alt mr-3"></i>
+                            Reservations
+                        </a>
+                        
+                        <a href="{{ url_for('admin_gallery') }}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.endpoint == 'admin_gallery' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-images mr-3"></i>
+                            Gallery
+                        </a>
+                        
+                        <a href="{{ url_for('admin_restaurant_info') }}"
+                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
+                                  {% if request.endpoint == 'admin_restaurant_info' %}
+                                  bg-gray-900 text-white
+                                  {% else %}
+                                  text-gray-300 hover:bg-gray-700 hover:text-white
+                                  {% endif %}">
+                            <i class="fas fa-info-circle mr-3"></i>
+                            Restaurant Info
+                        </a>
+                    </nav>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="flex-1 overflow-auto focus:outline-none">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+                {% if messages %}
+                    <div class="max-w-7xl mx-auto px-4 mt-4">
+                        {% for category, message in messages %}
+                            <div class="alert alert-{{ category }} p-4 mb-4 rounded-lg {% if category == 'error' %}bg-red-100 text-red-700 border border-red-300{% else %}bg-green-100 text-green-700 border border-green-300{% endif %}">
+                                <div class="flex items-center">
+                                    <i class="fas {% if category == 'error' %}fa-exclamation-triangle{% else %}fa-check-circle{% endif %} mr-2"></i>
+                                    {{ message }}
+                                </div>
+                            </div>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            {% endwith %}
+            
+            {% block content %}{% endblock %}
+        </div>
+    </div>
+    
+    <script src="{{ url_for('static', filename='js/image-handlers.js') }}"></script>
+</body>
+</html>
