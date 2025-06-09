@@ -1,0 +1,41 @@
+{% extends "admin/base.html" %}
+{% block title %}Edit Menu Item - RestaurantHub{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">Edit Menu Item</h1>
+    <form action="" method="POST" enctype="multipart/form-data" class="max-w-xl bg-white rounded-lg shadow-lg p-8">
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Name</label>
+            <input type="text" name="name" value="{{ item.name }}" required class="border rounded px-3 py-2 w-full">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Category</label>
+            <select name="category" required class="border rounded px-3 py-2 w-full">
+                {% for category in categories %}
+                    <option value="{{ category._id }}" {% if item.category_id == category._id|string %}selected{% endif %}>{{ category.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Price</label>
+            <input type="number" name="price" value="{{ item.price }}" min="0" step="0.01" required class="border rounded px-3 py-2 w-full">
+        </div>
+        <div class="mb-4">
+            <label class="block text-gray-700 font-semibold mb-2">Description</label>
+            <textarea name="description" class="border rounded px-3 py-2 w-full">{{ item.description }}</textarea>
+        </div>
+        <div class="mb-6">
+            <label class="block text-gray-700 font-semibold mb-2">Image</label>
+            {% if item.image %}
+                <img src="{{ url_for('static', filename=item.image) }}" alt="{{ item.name }}" class="h-24 w-24 object-cover rounded mb-2">
+            {% endif %}
+            <input type="file" name="image" accept="image/*" class="border rounded px-3 py-2 w-full">
+            <p class="text-xs text-gray-500 mt-1">Leave blank to keep existing image.</p>
+        </div>
+        <div class="flex justify-end">
+            <button type="submit" class="bg-orange-500 text-white px-6 py-2 rounded hover:bg-orange-600">Save Changes</button>
+            <a href="{{ url_for('admin_menu') }}" class="ml-4 text-gray-600 hover:text-orange-500">Cancel</a>
+        </div>
+    </form>
+</div>
+{% endblock %}

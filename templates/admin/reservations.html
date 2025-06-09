@@ -1,0 +1,57 @@
+{% extends "admin/base.html" %}
+{% block title %}Admin Reservations - RestaurantHub{% endblock %}
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <h1 class="text-2xl font-bold mb-6 text-gray-800">Reservations Management</h1>
+    {% if reservations %}
+    <div class="overflow-x-auto">
+        <table class="min-w-full bg-white rounded shadow">
+            <thead>
+                <tr>
+                    <th class="py-2 px-4 border-b">User</th>
+                    <th class="py-2 px-4 border-b">Phone</th>
+                    <th class="py-2 px-4 border-b">Date</th>
+                    <th class="py-2 px-4 border-b">Time</th>
+                    <th class="py-2 px-4 border-b">Guests</th>
+                    <th class="py-2 px-4 border-b">Status</th>
+                    <th class="py-2 px-4 border-b">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for reservation in reservations %}
+                <tr>
+                    <td class="py-2 px-4 border-b">{{ reservation.user_name }}</td>
+                    <td class="py-2 px-4 border-b">{{ reservation.user_phone }}</td>
+                    <td class="py-2 px-4 border-b">{{ reservation.date }}</td>
+                    <td class="py-2 px-4 border-b">{{ reservation.time }}</td>
+                    <td class="py-2 px-4 border-b">{{ reservation.guests }}</td>
+                    <td class="py-2 px-4 border-b">
+                        <span class="px-2 py-1 rounded-full text-xs font-semibold
+                            {% if reservation.status == 'pending' %} bg-yellow-100 text-yellow-800
+                            {% elif reservation.status == 'confirmed' %} bg-green-100 text-green-800
+                            {% elif reservation.status == 'cancelled' %} bg-red-100 text-red-800
+                            {% else %} bg-gray-100 text-gray-800 {% endif %}">
+                            {{ reservation.status|title }}
+                        </span>
+                    </td>
+                    <td class="py-2 px-4 border-b">
+                        <form action="{{ url_for('update_reservation_status', reservation_id=reservation._id) }}" method="POST" class="inline">
+                            <input type="hidden" name="reservation_id" value="{{ reservation._id }}">
+                            <select name="status" class="border rounded px-2 py-1 text-sm">
+                                <option value="pending" {% if reservation.status == 'pending' %}selected{% endif %}>Pending</option>
+                                <option value="confirmed" {% if reservation.status == 'confirmed' %}selected{% endif %}>Confirmed</option>
+                                <option value="cancelled" {% if reservation.status == 'cancelled' %}selected{% endif %}>Cancelled</option>
+                            </select>
+                            <button type="submit" class="ml-2 bg-blue-500 text-white px-2 py-1 rounded hover:bg-blue-600 text-sm">Update</button>
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+        <p class="text-gray-600">No reservations found.</p>
+    {% endif %}
+</div>
+{% endblock %}

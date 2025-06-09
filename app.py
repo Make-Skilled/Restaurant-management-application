@@ -1,5 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, flash, session, jsonify
 from flask_pymongo import PyMongo
+
 from werkzeug.security import generate_password_hash, check_password_hash
 from werkzeug.utils import secure_filename
 from bson.objectid import ObjectId
@@ -229,71 +230,9 @@ def order():
         menu_items[cat_id] = items
     return render_template('order.html', categories=categories, menu_items=menu_items)
 
-@app.route('/cart')
-@login_required
-def cart():
-    # Get user information for delivery details
-    user = mongo.db.users.find_one({'_id': ObjectId(session['user_id'])})
-    return render_template('cart.html', user=user)
 
-@app.route('/checkout', methods=['POST'])
-@login_required
-def checkout():
-    cart_items = request.json.get('items', [])
-    total_amount = request.json.get('total', 0)
-    delivery_address = request.json.get('address', '')
-    phone = request.json.get('phone', '')
-    notes = request.json.get('notes', '')
-    
-    order_data = {
-        'user_id': session['user_id'],
-        'items': cart_items,
-        'total_amount': total_amount,
-        'delivery_address': delivery_address,
-        'phone': phone,
-        'notes': notes,
-        'status': 'pending',
-        'order_date': datetime.utcnow(),
-        'estimated_delivery': datetime.utcnow() + timedelta(minutes=45)
-    }
-    
-    result = mongo.db.orders.insert_one(order_data)
-    
-    # Add notification for restaurant staff
-    notification_data = {
-        'type': 'new_order',
-        'order_id': str(result.inserted_id),
-        'user_id': session['user_id'],
-        'message': f'New order received from {session["user_name"]}',
-        'created_at': datetime.utcnow(),
-        'read': False
-    }
-    mongo.db.notifications.insert_one(notification_data)
-    
-    return jsonify({'success': True, 'order_id': str(result.inserted_id)})
 
-@app.route('/order-confirmation')
-@login_required
-def order_confirmation():
-    order_id = request.args.get('order_id')
-    if not order_id:
-        return redirect(url_for('my_orders'))
-    
-    order = mongo.db.orders.find_one({'_id': ObjectId(order_id)})
-    if not order or str(order['user_id']) != session['user_id']:
-        flash('Order not found', 'error')
-        return redirect(url_for('my_orders'))
-        
-    return render_template('order_confirmation.html', order=order)
 
-@app.route('/my-orders')
-@login_required
-def my_orders():
-    orders = list(mongo.db.orders.find({
-        'user_id': session['user_id']
-    }).sort('order_date', -1))
-    
-    return render_template('my_orders.html', orders=orders)
 
 # Gallery and About pages
 @app.route('/gallery')
@@ -397,40 +336,68 @@ def add_category():
     flash('Category added successfully', 'success')
     return redirect(url_for('admin_menu'))
 
+@app.route('/admin/menu/edit-item/<item_id>', methods=['GET', 'POST'])
+@admin_required
+def edit_menu_item(item_id):
+    from bson.objectid import ObjectId
+    item = mongo.db.menu_items.find_one({'_id': ObjectId(item_id)})
+    categories = list(mongo.db.menu_categories.find())
+    if request.method == 'POST':
+        category_id = request.form['category']
+        category = mongo.db.menu_categories.find_one({'_id': ObjectId(category_id)})
+        update_data = {
+            'name': request.form['name'],
+            'category_id': category_id,
+            'category': category['name'] if category else '',
+            'price': float(request.form['price']),
+            'description': request.form.get('description', ''),
+        }
+        image_file = request.files.get('image')
+        if image_file and image_file.filename:
+            filename = secure_filename(image_file.filename)
+            image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            image_file.save(image_path)
+            update_data['image'] = 'uploads/' + filename
+        mongo.db.menu_items.update_one({'_id': ObjectId(item_id)}, {'$set': update_data})
+        flash('Menu item updated successfully', 'success')
+        return redirect(url_for('admin_menu'))
+    return render_template('admin/edit_menu_item.html', item=item, categories=categories)
+
+@app.route('/admin/menu/delete-item/<item_id>', methods=['POST'])
+@admin_required
+def delete_menu_item(item_id):
+    from bson.objectid import ObjectId
+    item = mongo.db.menu_items.find_one({'_id': ObjectId(item_id)})
+    if item and item.get('image'):
+        image_path = os.path.join(app.root_path, 'static', item['image'])
+        if os.path.exists(image_path):
+            os.remove(image_path)
+    mongo.db.menu_items.delete_one({'_id': ObjectId(item_id)})
+    flash('Menu item deleted successfully', 'success')
+    return redirect(url_for('admin_menu'))
+
 @app.route('/admin/menu/add-item', methods=['POST'])
 @admin_required
 def add_menu_item():
-    try:
-        # Handle image upload
-        image_data = None
-        if 'image' in request.files:
-            image = request.files['image']
-            if image.filename:
-                image_data = save_image(
-                    image, 
-                    folder='uploads/menu',
-                    sizes={
-                        'thumbnail': (150, 150),
-                        'medium': (400, 300)
-                    }
-                )
-        
-        item_data = {
-            'name': request.form['name'],
-            'description': request.form['description'],
-            'price': float(request.form['price']),
-            'category_id': request.form['category_id'],
-            'featured': 'featured' in request.form,
-            'available': True,
-            'created_at': datetime.utcnow(),
-            'images': image_data
-        }
-        
-        result = mongo.db.menu_items.insert_one(item_data)
-        flash('Menu item added successfully', 'success')
-    except Exception as e:
-        flash(f'Error adding menu item: {str(e)}', 'error')
-    
+    category_id = request.form['category']
+    category = mongo.db.menu_categories.find_one({'_id': ObjectId(category_id)})
+    item_data = {
+        'name': request.form['name'],
+        'category_id': category_id,
+        'category': category['name'] if category else '',
+        'price': float(request.form['price']),
+        'description': request.form.get('description', ''),
+        'created_at': datetime.utcnow()
+    }
+    # Handle image upload
+    image_file = request.files.get('image')
+    if image_file and image_file.filename:
+        filename = secure_filename(image_file.filename)
+        image_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        image_file.save(image_path)
+        item_data['image'] = 'uploads/' + filename  # relative to static folder
+    mongo.db.menu_items.insert_one(item_data)
+    flash('Menu item added successfully', 'success')
     return redirect(url_for('admin_menu'))
 
 @app.route('/admin/orders')
@@ -456,7 +423,7 @@ def admin_reservations():
 
 @app.route('/admin/reservation/update/<reservation_id>', methods=['POST'])
 @admin_required
-def update_reservation_status():
+def update_reservation_status(reservation_id):
     reservation_id = request.form['reservation_id']
     status = request.form['status']
     
@@ -468,29 +435,11 @@ def update_reservation_status():
     flash('Reservation status updated', 'success')
     return redirect(url_for('admin_reservations'))
 
-@app.route('/admin/restaurant-info', methods=['GET', 'POST'])
+@app.route('/admin/contact-messages')
 @admin_required
-def admin_restaurant_info():
-    if request.method == 'POST':
-        info_data = {
-            'name': request.form['name'],
-            'story': request.form['story'],
-            'address': request.form['address'],
-            'phone': request.form['phone'],
-            'email': request.form['email'],
-            'hours': request.form['hours'],
-            'updated_at': datetime.utcnow()
-        }
-        
-        mongo.db.restaurant_info.update_one(
-            {},
-            {'$set': info_data},
-            upsert=True
-        )
-        flash('Restaurant information updated', 'success')
-    
-    restaurant_info = mongo.db.restaurant_info.find_one()
-    return render_template('admin/restaurant_info.html', restaurant_info=restaurant_info)
+def admin_contact_messages():
+    messages = list(mongo.db.contact_messages.find().sort('created_at', -1))
+    return render_template('admin/contact_messages.html', messages=messages)
 
 @app.route('/admin/gallery')
 @admin_required

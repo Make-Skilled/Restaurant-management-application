@@ -59,9 +59,6 @@
                                     <a href="{{ url_for('my_reservations') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
                                         <i class="fas fa-list mr-2"></i>My Reservations
                                     </a>
-                                    <a href="{{ url_for('order') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
-                                        <i class="fas fa-shopping-cart mr-2"></i>Order Online
-                                    </a>
                                 {% endif %}
                                 <hr class="my-1">
                                 <a href="{{ url_for('logout') }}" class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100">
@@ -162,7 +159,7 @@
                 <div>
                     <h4 class="text-lg font-semibold mb-4">Services</h4>
                     <ul class="space-y-2">
-                        <li><a href="{{ url_for('order') }}" class="text-gray-300 hover:text-orange-500">Online Ordering</a></li>
+                        
                         <li><a href="{{ url_for('reservations') }}" class="text-gray-300 hover:text-orange-500">Table Booking</a></li>
                         <li><span class="text-gray-300">Catering</span></li>
                         <li><span class="text-gray-300">Private Events</span></li>

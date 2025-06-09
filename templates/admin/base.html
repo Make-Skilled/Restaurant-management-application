@@ -72,16 +72,7 @@
                             Menu Management
                         </a>
                         
-                        <a href="{{ url_for('admin_orders') }}"
-                           class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
-                                  {% if request.endpoint == 'admin_orders' %}
-                                  bg-gray-900 text-white
-                                  {% else %}
-                                  text-gray-300 hover:bg-gray-700 hover:text-white
-                                  {% endif %}">
-                            <i class="fas fa-shopping-cart mr-3"></i>
-                            Orders
-                        </a>
+                        
                         
                         <a href="{{ url_for('admin_reservations') }}"
                            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
@@ -105,15 +96,15 @@
                             Gallery
                         </a>
                         
-                        <a href="{{ url_for('admin_restaurant_info') }}"
+                        <a href="{{ url_for('admin_contact_messages') }}"
                            class="group flex items-center px-2 py-2 text-sm font-medium rounded-md
-                                  {% if request.endpoint == 'admin_restaurant_info' %}
+                                  {% if request.endpoint == 'admin_contact_messages' %}
                                   bg-gray-900 text-white
                                   {% else %}
                                   text-gray-300 hover:bg-gray-700 hover:text-white
                                   {% endif %}">
-                            <i class="fas fa-info-circle mr-3"></i>
-                            Restaurant Info
+                            <i class="fas fa-envelope mr-3"></i>
+                            Contact Messages
                         </a>
                     </nav>
                 </div>

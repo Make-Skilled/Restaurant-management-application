@@ -20,8 +20,8 @@
             {% if images %}
                 {% for image in images %}
                     <div class="relative group overflow-hidden rounded-lg shadow-lg">
-                        <img src="{{ url_for('static', filename='uploads/' + image.filename) }}" 
-                             alt="{{ image.caption }}"
+                        <img src="{{ url_for('static', filename=image.images.medium.replace('\\', '/')) }}"
+                            alt="{{ image.caption }}"
                              class="w-full h-64 object-cover transform transition duration-300 group-hover:scale-110">
                         <div class="absolute inset-0 bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition duration-300 flex items-center justify-center">
                             <div class="text-white text-center p-4">
